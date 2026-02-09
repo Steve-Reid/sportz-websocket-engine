@@ -1,4 +1,5 @@
-import express from 'express';
+import express from "express";
+import { matchRouter } from "./routes/matches.js";
 
 const app = express();
 
@@ -6,9 +7,12 @@ const app = express();
 app.use(express.json());
 
 // Root GET route
-app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to the Express.js server!' });
+app.get("/", (req, res) => {
+  res.json({ message: "Welcome to the Express.js server!" });
 });
+
+// Matches GET route
+app.use("/matches", matchRouter);
 
 // Start server on port 8000
 const PORT = 8000;
