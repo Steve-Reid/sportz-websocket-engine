@@ -5,7 +5,7 @@ import {
   createMatchSchema,
   listMatchesQuerySchema,
 } from "../validation/matches.js";
-import { getMatchStatus } from "../utils/match-staus.js";
+import { getMatchStatus } from "../utils/match-status.js";
 import { desc } from "drizzle-orm";
 
 export const matchRouter = Router();
@@ -38,15 +38,16 @@ matchRouter.get("/", async (req, res) => {
 
 matchRouter.post("/", async (req, res) => {
   const parsed = createMatchSchema.safeParse(req.body);
-  const {
-    data: { startTime, endTime, homeScore, awayScore },
-  } = parsed;
 
   if (!parsed.success) {
     return res
       .status(400)
       .json({ error: "Invalid payload.", details: parsed.error.issues });
   }
+
+  const {
+    data: { startTime, endTime, homeScore, awayScore },
+  } = parsed;
 
   try {
     const [event] = await db
@@ -63,8 +64,6 @@ matchRouter.post("/", async (req, res) => {
 
     res.status(201).json({ data: event });
   } catch (e) {
-    res
-      .status(500)
-      .json({ error: "Failed to list matches.", details: JSON.stringify(e) });
+    res.status(500).json({ error: "Failed to create matches." });
   }
 });
